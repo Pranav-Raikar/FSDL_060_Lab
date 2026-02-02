@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pranav Raikar | Portfolio</title>
+    <style>
+        /* --- 1. RESET & VARIABLES --- */
+        :root {
+            --primary: #0f172a;       /* Dark Navy */
+            --secondary: #334155;     /* Slate Gray */
+            --accent: #2563eb;        /* Bright Blue */
+            --accent-hover: #1d4ed8;  /* Darker Blue */
+            --bg-light: #f8fafc;      /* Very Light Gray */
+            --white: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        a { text-decoration: none; transition: 0.3s ease; color: inherit; }
+        ul { list-style: none; }
+
+        /* --- 2. LAYOUT UTILITIES --- */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 50px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 5px;
+            background: var(--accent);
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+
+        /* --- 3. HEADER --- */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--accent);
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--secondary);
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        /* --- 4. HERO SECTION --- */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, #1e293b 100%);
+            color: var(--white);
+            padding: 120px 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            letter-spacing: -1px;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: #cbd5e1;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+
+        .hero-contact {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .pill {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .pill:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-cta {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-weight: 700;
+            margin-top: 40px;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-cta:hover {
+            transform: translateY(-2px);
+            background: var(--accent-hover);
+        }
+
+        /* --- 5. SUMMARY --- */
+        .summary-box {
+            background: var(--white);
+            padding: 40px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-md);
+            border-left: 6px solid var(--accent);
+            font-size: 1.1rem;
+            color: var(--secondary);
+            line-height: 1.8;
+        }
+
+        /* --- 6. EXPERIENCE --- */
+        .timeline-item {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease;
+        }
+
+        .timeline-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .exp-header {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 15px;
+        }
+
+        .exp-role {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .exp-company {
+            font-size: 1.1rem;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .exp-date {
+            background: #eff6ff;
+            color: var(--accent);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            align-self: center;
+        }
+
+        .exp-list {
+            padding-left: 20px;
+        }
+
+        .exp-list li {
+            list-style-type: disc;
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+
+        /* --- 7. SKILLS --- */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+        }
+
+        .skill-card {
+            background: var(--white);
+            padding: 24px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-md);
+            border-top: 4px solid var(--accent);
+        }
+
+        .skill-title {
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tag {
+            background: #f1f5f9;
+            color: var(--secondary);
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* --- 8. PROJECTS --- */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .project-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .project-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: #bfdbfe;
+        }
+
+        .project-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+
+        .project-desc {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .tech-stack {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: auto;
+        }
+
+        /* --- 9. EDUCATION --- */
+        .edu-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .edu-card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .edu-details h3 {
+            font-size: 1.15rem;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+        
+        .edu-details p {
+            color: var(--text-muted);
+        }
+
+        .edu-score {
+            text-align: right;
+            background: var(--bg-light);
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .edu-score .val {
+            display: block;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .edu-score .label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        /* --- 10. CERTIFICATIONS --- */
+        .cert-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .cert-badge {
+            background: var(--white);
+            border: 1px solid #cbd5e1;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+
+        .cert-badge:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: #eff6ff;
+        }
+
+        /* --- 11. FOOTER --- */
+        footer {
+            background: var(--primary);
+            color: #94a3b8;
+            padding: 60px 0;
+            text-align: center;
+            margin-top: 80px;
+        }
+
+        .footer-links a {
+            color: var(--white);
+            margin: 0 15px;
+            font-weight: 600;
+            opacity: 0.8;
+        }
+        
+        .footer-links a:hover { opacity: 1; color: var(--accent); }
+
+        .copyright {
+            margin-top: 30px;
+            font-size: 0.9rem;
+            opacity: 0.6;
+        }
+
+        /* --- MOBILE --- */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .nav-links { display: none; } /* Simplified for single file demo */
+            .exp-header { flex-direction: column; gap: 5px; }
+            .exp-date { align-self: flex-start; margin-top: 5px; }
+            .edu-card { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .edu-score { width: 100%; text-align: left; display: flex; justify-content: space-between; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">PRANAV RAIKAR</div>
+                <div class="nav-links">
+                    <a href="#about">About</a>
+                    <a href="#experience">Experience</a>
+                    <a href="#projects">Projects</a>
+                    <a href="#skills">Skills</a>
+                    <a href="#education">Education</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Pranav Raikar</h1>
+            <p class="hero-subtitle">Computer Science Undergraduate | Flutter Developer | Problem Solver</p>
+            
+            <div class="hero-contact">
+                <span class="pill">📍 Pune, Maharashtra</span>
+                <a href="mailto:pranav.raikar05@gmail.com" class="pill">📧 pranav.raikar05@gmail.com</a>
+                <a href="tel:+917558473890" class="pill">📞 +91-75584-73890</a>
+            </div>
+
+            <div class="hero-contact" style="margin-top: 10px;">
+                <a href="#" class="pill">🔗 LinkedIn</a>
+                <a href="#" class="pill">💻 GitHub</a>
+            </div>
+
+            <a href="mailto:pranav.raikar05@gmail.com" class="btn-cta">Contact Me</a>
+        </div>
+    </section>
+
+    <section id="about">
+        <div class="container">
+            <h2 class="section-title">Professional Summary</h2>
+            <div class="summary-box">
+                Dedicated and detail-oriented Computer Science undergraduate at <strong>MIT World Peace University</strong> with a strong interest in software development and problem-solving. Possesses a solid foundation in programming, data structures, and application development, with hands-on experience through academic and real-world projects. Enthusiastic about learning new technologies and building efficient, scalable, and user-focused solutions. Eager to contribute to collaborative environments and grow as a software professional.
+            </div>
+        </div>
+    </section>
+
+    <section id="experience" style="background-color: #fff;">
+        <div class="container">
+            <h2 class="section-title">Internship Experience</h2>
+            
+            <div class="timeline-item">
+                <div class="exp-header">
+                    <div>
+                        <div class="exp-role">Flutter Developer Intern</div>
+                        <div class="exp-company">Obelisk Infosystems</div>
+                    </div>
+                    <div class="exp-date">Jan 2024 – Jun 2024</div>
+                </div>
+                <ul class="exp-list">
+                    <li>Assisted in developing and maintaining cross-platform mobile applications using Flutter and Dart.</li>
+                    <li>Collaborated with design and backend teams to integrate RESTful APIs and ensure smooth performance.</li>
+                    <li>Worked on UI/UX implementation, debugging, and improving app responsiveness across Android and iOS.</li>
+                    <li>Gained practical experience with Git version control and Agile development practices.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects">
+        <div class="container">
+            <h2 class="section-title">Key Projects</h2>
+            <div class="projects-grid">
+                
+                <div class="project-card">
+                    <div class="project-title">Road Health Monitoring System</div>
+                    <div class="project-desc">
+                        Developed a mobile system to detect and report road issues such as potholes and cracks using GPS tagging for accurate location tracking.
+                    </div>
+                    <div class="tech-stack">Flutter • Dart • GPS Integration</div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-title">Library Management System</div>
+                    <div class="project-desc">
+                        Designed a web application to efficiently manage books, member records, and issue/return operations with a user-friendly interface.
+                    </div>
+                    <div class="tech-stack">Web • HTML/CSS • Database</div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-title">Budget Transparency System</div>
+                    <div class="project-desc">
+                        Created a dashboard to track budget allocation and spending, aimed at improving financial transparency and tracking.
+                    </div>
+                    <div class="tech-stack">HTML • CSS • SQL</div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-title">Hotel Management System</div>
+                    <div class="project-desc">
+                        Built a console-based system for room booking, billing, and customer record management using C++ file handling.
+                    </div>
+                    <div class="tech-stack">C++ • File Handling</div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="skills" style="background-color: #fff;">
+        <div class="container">
+            <h2 class="section-title">Technical Skills</h2>
+            <div class="skills-grid">
+                
+                <div class="skill-card">
+                    <div class="skill-title">Programming Languages</div>
+                    <div class="tags-container">
+                        <span class="tag">Java</span>
+                        <span class="tag">C++</span>
+                        <span class="tag">C</span>
+                    </div>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-title">Web Technologies</div>
+                    <div class="tags-container">
+                        <span class="tag">HTML5</span>
+                        <span class="tag">CSS3</span>
+                    </div>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-title">Mobile Development</div>
+                    <div class="tags-container">
+                        <span class="tag">Flutter</span>
+                        <span class="tag">Dart</span>
+                    </div>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-title">Databases & Core</div>
+                    <div class="tags-container">
+                        <span class="tag">MySQL</span>
+                        <span class="tag">Data Structures</span>
+                        <span class="tag">Algorithms</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="education">
+        <div class="container">
+            <h2 class="section-title">Education</h2>
+            <div class="edu-grid">
+                
+                <div class="edu-card">
+                    <div class="edu-details">
+                        <h3>MIT World Peace University (MIT-WPU)</h3>
+                        <p>Bachelor of Technology – Computer Science</p>
+                        <p style="font-size: 0.9rem; margin-top: 5px;">2024 – 2027</p>
+                    </div>
+                    <div class="edu-score">
+                        <span class="val">8.22</span>
+                        <span class="label">CGPA</span>
+                    </div>
+                </div>
+
+                <div class="edu-card">
+                    <div class="edu-details">
+                        <h3>MIT WPU</h3>
+                        <p>Diploma – Computer Science</p>
+                        <p style="font-size: 0.9rem; margin-top: 5px;">2021 – 2024</p>
+                    </div>
+                    <div class="edu-score">
+                        <span class="val">9.02</span>
+                        <span class="label">CGPA</span>
+                    </div>
+                </div>
+
+                <div class="edu-card">
+                    <div class="edu-details">
+                        <h3>Podar International School, Pune</h3>
+                        <p>CBSE – Secondary (10th)</p>
+                        <p style="font-size: 0.9rem; margin-top: 5px;">2020 – 2021</p>
+                    </div>
+                    <div class="edu-score">
+                        <span class="val">80.6%</span>
+                        <span class="label">Percentage</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section style="background-color: #fff;">
+        <div class="container" style="text-align: center;">
+            <h2 class="section-title" style="margin-bottom: 40px;">
