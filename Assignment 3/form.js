@@ -1,104 +1,77 @@
 $(document).ready(function() {
-    // --- JQUERY OPERATIONS ---
-    
-    // Set background-image using jQuery CSS property
-    $("body").css("background", "linear-gradient(135deg, #6366f1 0%, #a855f7 100%)");
+    // jQuery: Modern Background
+    $("body").css({
+        "background": "radial-gradient(circle at top left, #4f46e5, #0f172a)",
+        "background-attachment": "fixed"
+    });
 
-    // Change button text using jQuery
-    $("#submitBtn").text("Create Account");
+    const validations = {
+        username: (val) => val.length < 3 ? "Name must be at least 3 characters." : "",
+        // Added Age Validation logic
+        age: (val) => {
+            if (val === "") return "Age is required.";
+            const ageNum = parseInt(val);
+            return (isNaN(ageNum) || ageNum < 18 || ageNum > 100) ? "Age must be between 18 and 100." : "";
+        },
+        email: (val) => {
+            const regex = /^[a-zA-Z0-9._]+@[a-zA-Z0-9]{2,5}\.[a-zA-Z]{2,3}$/;
+            return !regex.test(val) ? "Format: letters@abc.com (Domain 2-5 chars)." : "";
+        },
+        phone: (val) => !/^\d{10}$/.test(val) ? "Must be exactly 10 digits." : "",
+        password: (val) => {
+            const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[&$#@]).{7,}$/;
+            return !regex.test(val) ? "7+ chars, 1 Capital, 1 Digit, 1 Special (&$#@)." : "";
+        },
+        confirmPassword: (val) => val !== $("#password").val() ? "Passwords do not match." : ""
+    };
 
-    // Add attribute using jQuery
-    $("#username").attr("placeholder", "Enter Full Name");
+    function validateField(field) {
+        const id = $(field).attr('id');
+        const val = $(field).val().trim();
+        const errorMsg = validations[id] ? validations[id](val) : "";
+        const errorLabel = $(`#${id}Error`);
 
-    // Form Submit Event
+        if (errorMsg) {
+            errorLabel.text(errorMsg).addClass('visible');
+            $(field).css("border-color", "#ef4444");
+            return false;
+        } else {
+            errorLabel.removeClass('visible').text("");
+            $(field).css("border-color", "#10b981");
+            return true;
+        }
+    }
+
+    // Attach real-time listener to all inputs
+    $("input").on("input", function() {
+        validateField(this);
+        if ($(this).attr('id') === 'password') validateField($("#confirmPassword")[0]);
+    });
+
     $("#regForm").on("submit", function(e) {
         e.preventDefault();
         
-        // --- ACCESSING ELEMENTS (DOM & JQUERY) ---
+        let isValid = true;
+        $("input").each(function() {
+            if (!validateField(this)) isValid = false;
+        });
+
+        const finalMsg = document.getElementById("finalMsg"); 
         
-        // Access HTML form data using jQuery
-        const user = $("#username").val().trim();
-        const email = $("#email").val().trim();
-        const phone = $("#phone").val().trim();
-        const pass = $("#password").val();
-        const confPass = $("#confirmPassword").val();
-        
-        // Accessing element using getElementById (DOM)
-        const msg = document.getElementById("msg");
-        const nodeArea = document.getElementById("nodeArea");
-        const statusImg = document.getElementById("statusImg");
-
-        // --- VALIDATIONS (JavaScript) ---
-
-        // a) All fields mandatory (checks for empty or spaces)
-        if (!user || !email || !phone || !pass || !confPass) {
-            msg.innerHTML = "All fields are mandatory!";
-            msg.style.color = "red";
-            return;
+        if (isValid) {
+            finalMsg.innerHTML = "Registration Successful!"; 
+            $(finalMsg).css({
+                "display": "block",
+                "color": "#065f46",
+                "background": "#d1fae5"
+            }).fadeIn();
+            $("#submitBtn").text("Account Created").css("background", "#10b981").prop("disabled", true);
+        } else {
+            $(finalMsg).text("Please fix the errors above.").css({
+                "display": "block",
+                "color": "#991b1b",
+                "background": "#fee2e2"
+            }).fadeIn();
         }
-
-        // b) Phone number: Only numeric and 10 digits
-        if (!/^\d{10}$/.test(phone)) {
-            msg.innerHTML = "Phone must be 10 numeric digits.";
-            msg.style.color = "red";
-            return;
-        }
-
-        // c) Email Validation (Regex)
-        // Letters before @, 3 letters between @ and ., 2 or 3 letters after .
-        const emailRegex = /^[a-zA-Z]+@[a-zA-Z]{3}\.[a-zA-Z]{2,3}$/;
-        if (!emailRegex.test(email)) {
-            msg.innerHTML = "Email format error (e.g., user@abc.com)";
-            msg.style.color = "red";
-            return;
-        }
-
-        // d) Password Validation
-        // Length 7+, 1 Capital, 1 Digit, 1 Special char (&, $, #, @)
-        const passRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[&amp;$#@]).{7,}$/;
-        if (!passRegex.test(pass)) {
-            msg.innerHTML = "Password: 7+ chars, 1 Upper, 1 Digit, 1 Special.";
-            msg.style.color = "red";
-            return;
-        }
-
-        // e) Password Match
-        if (pass !== confPass) {
-            msg.innerHTML = "Passwords do not match!";
-            msg.style.color = "red";
-            return;
-        }
-
-        // --- DOM MANIPULATION ---
-
-        // Change the text using innerHTML property
-        msg.innerHTML = "Registration Successful!";
-        
-        // Change CSS properties (color and position)
-        msg.style.color = "#10b981";
-        msg.style.fontWeight = "bold";
-
-        // Change image source after successful click/validation
-        statusImg.src = "https://cdn-icons-png.flaticon.com/512/190/190411.png";
-        statusImg.style.display = "block";
-
-        // Add a text node and attach it to a parent node
-        nodeArea.innerHTML = ""; // Clear previous entries
-        nodeArea.style.display = "block";
-        const welcomeText = document.createTextNode("Success! Node added for " + user);
-        const para = document.createElement("p");
-        para.appendChild(welcomeText);
-        nodeArea.appendChild(para);
-
-        // jQuery: Change CSS of button on success
-        $("#submitBtn").css("background-color", "#10b981").text("Registered");
     });
 });
-
-// Extra: Function to demonstrate "Delete a node"
-function deleteNotification() {
-    const node = document.getElementById("nodeArea");
-    if (node.lastChild) {
-        node.removeChild(node.lastChild); // Delete a node
-    }
-}

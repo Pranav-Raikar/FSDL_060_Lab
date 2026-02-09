@@ -3,58 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Registration | CSE Lab</title>
+    <title>Modern Registration | Real-time Validation</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     
     <style>
-        /* Custom Modern Properties */
         :root {
             --glass-bg: rgba(255, 255, 255, 0.85);
             --accent: #6366f1;
             --accent-glow: rgba(99, 102, 241, 0.3);
             --text-dark: #1f2937;
             --text-muted: #6b7280;
+            --error-red: #ef4444;
+            --success-green: #10b981;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
 
         body {
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: #0f172a; /* Will be layered with gradient by jQuery */
-            overflow: hidden;
+            background: #0f172a;
+            overflow-x: hidden;
         }
 
-        /* Glassmorphism Container */
         .container {
             background: var(--glass-bg);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             padding: 2.5rem;
             border-radius: 2rem;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             width: 90%;
             max-width: 440px;
             border: 1px solid rgba(255, 255, 255, 0.2);
-            position: relative;
-            z-index: 1;
         }
 
-        h2 { color: var(--text-dark); font-size: 2rem; font-weight: 800; letter-spacing: -0.025em; margin-bottom: 0.5rem; text-align: center; }
-        .subtitle { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 2rem; text-align: center; }
+        h2 { color: var(--text-dark); font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem; text-align: center; }
+        .subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; text-align: center; }
 
-        .form-group { margin-bottom: 1rem; }
+        .form-group { margin-bottom: 1.2rem; position: relative; }
         
         input {
             width: 100%;
             padding: 0.8rem 1rem;
             background: rgba(249, 250, 251, 0.8);
             border: 1.5px solid #e5e7eb;
-            border-radius: 1rem;
-            font-size: 1rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 0.8rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
         }
 
         input:focus {
@@ -63,6 +61,19 @@
             box-shadow: 0 0 0 4px var(--accent-glow);
             background: #fff;
         }
+
+        /* Field-specific error styling */
+        .error-text {
+            color: var(--error-red);
+            font-size: 0.75rem;
+            margin-top: 4px;
+            display: block;
+            min-height: 1em;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .error-text.visible { opacity: 1; }
 
         button {
             width: 100%;
@@ -75,187 +86,58 @@
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s;
-            margin-top: 0.5rem;
         }
 
-        button:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.4); }
+        button:disabled { background: #9ca3af; cursor: not-allowed; }
 
-        /* Dynamic Feedback Styles */
-        #msg { 
-            margin-top: 1.5rem; 
+        #finalMsg { 
+            margin-top: 1rem; 
             font-size: 0.9rem; 
             text-align: center; 
             padding: 0.75rem;
             border-radius: 0.75rem;
             display: none;
-            animation: slideUp 0.4s ease;
-        }
-
-        #statusImg { 
-            width: 50px; 
-            margin: 1rem auto; 
-            display: none; 
-        }
-        
-        #nodeArea {
-            margin-top: 1rem;
-            padding: 1rem;
-            background: rgba(16, 185, 129, 0.1);
-            border-radius: 1rem;
-            color: #065f46;
-            font-size: 0.85rem;
-            display: none;
-            text-align: center;
-        }
-
-        .delete-btn {
-            background: none;
-            color: #ef4444;
-            font-size: 0.8rem;
-            text-decoration: underline;
-            cursor: pointer;
-            border: none;
-            margin-top: 0.5rem;
-            display: block;
-            width: 100%;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h2 id="main-title">Join CSE</h2>
-        <p class="subtitle">Secure Registration Portal</p>
+        <h2>Create Account</h2>
+        <p class="subtitle">Real-time Student Validation Portal</p>
         
-        <form id="regForm">
-            <div class="form-group"><input type="text" id="username" placeholder="Full Name"></div>
-            <div class="form-group"><input type="text" id="email" placeholder="Email (letters@abc.com)"></div>
-            <div class="form-group"><input type="text" id="phone" placeholder="Phone Number"></div>
-            <div class="form-group"><input type="password" id="password" placeholder="Password"></div>
-            <div class="form-group"><input type="password" id="confirmPassword" placeholder="Confirm Password"></div>
+        <form id="regForm" novalidate>
+            <div class="form-group">
+                <input type="text" id="username" placeholder="Full Name">
+                <span class="error-text" id="usernameError"></span>
+            </div>
+            <div class="form-group">
+                <input type="text" id="email" placeholder="Email (letters@abc.com)">
+                <span class="error-text" id="emailError"></span>
+            </div>
+            <div class="form-group">
+                <input type="text" id="phone" placeholder="Phone Number">
+                <span class="error-text" id="phoneError"></span>
+            </div>
+            <div class="form-group">
+                <input type="number" id="age" placeholder="Age">
+                <span class="error-text" id="ageError"></span>
+            </div>
+            <div class="form-group">
+                <input type="password" id="password" placeholder="Password">
+                <span class="error-text" id="passwordError"></span>
+            </div>
+            <div class="form-group">
+                <input type="password" id="confirmPassword" placeholder="Confirm Password">
+                <span class="error-text" id="confirmPasswordError"></span>
+            </div>
             
-            <button type="submit" id="submitBtn">Create Account</button>
+            <button type="submit" id="submitBtn">Sign Up</button>
         </form>
 
-        <img id="statusImg" src="" alt="Status">
-        <p id="msg"></p>
-        <div id="nodeArea"></div>
-        <button id="delBtn" class="delete-btn" style="display:none;">Clear Session Node</button>
+        <p id="finalMsg"></p>
     </div>
 
-    <script>
-        $(document).ready(function() {
-            // jQuery: Dynamic Modern Background
-            $("body").css({
-                "background": "radial-gradient(circle at top left, #4f46e5, #0f172a)",
-                "background-attachment": "fixed"
-            });
-
-            // jQuery: Add tooltip attribute
-            $("#username").attr("title", "Enter your legal full name");
-
-            $("#regForm").on("submit", function(e) {
-                e.preventDefault();
-                
-                // jQuery: Access Form Data
-                const user = $("#username").val().trim();
-                const email = $("#email").val().trim();
-                const phone = $("#phone").val().trim();
-                const pass = $("#password").val();
-                const confPass = $("#confirmPassword").val();
-                
-                // DOM: Access elements (getElementsById)
-                const msg = document.getElementById("msg");
-                const statusImg = document.getElementById("statusImg");
-                const nodeArea = document.getElementById("nodeArea");
-
-                $(msg).hide();
-
-                // 1. Mandatory Fields
-                if (!user || !email || !phone || !pass) {
-                    showError("All fields must be completed.");
-                    return;
-                }
-
-                // 2. Phone (10 digits)
-                if (!/^\d{10}$/.test(phone)) {
-                    showError("Please enter a valid 10-digit number.");
-                    return;
-                }
-
-                // 3. Email (Assignment Regex)
-                const emailRegex = /^[a-zA-Z0-9._]+@[a-zA-Z0-9]{2,5}\.[a-zA-Z]{2,3}$/;
-                if (!emailRegex.test(email)) {
-                    showError("Invalid email format for registration.");
-                    return;
-                }
-
-                // 4. Password (Length 7, Capital, Digit, Special)
-                const passRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[&$#@]).{7,}$/;
-                if (!passRegex.test(pass)) {
-                    showError("Password requires 7+ chars, 1 Capital, 1 Digit, 1 Special.");
-                    return;
-                }
-
-                // 5. Match Check
-                if (pass !== confPass) {
-                    showError("The passwords entered do not match.");
-                    return;
-                }
-
-                // --- DOM MANIPULATION (Success) ---
-                
-                // Change text via innerHTML
-                msg.innerHTML = "Access Granted! Profile Created.";
-                
-                // Change CSS properties via DOM
-                msg.style.color = "#065f46";
-                msg.style.backgroundColor = "#d1fae5";
-                msg.style.display = "block";
-
-                // Change image source via DOM
-                statusImg.src = "https://cdn-icons-png.flaticon.com/512/5610/5610944.png";
-                $(statusImg).fadeIn();
-
-                // Add a text node and attach to parent (DOM)
-                nodeArea.innerHTML = ""; 
-                const welcomePara = document.createElement("p");
-                const textNode = document.createTextNode("Session active for: " + user);
-                welcomePara.appendChild(textNode);
-                nodeArea.appendChild(welcomePara);
-                $(nodeArea).fadeIn();
-                $("#delBtn").show();
-
-                // jQuery: UI Updates
-                $("#submitBtn").text("Success!").css("background", "#10b981");
-                $("#main-title").text("Welcome!");
-            });
-
-            // Delete a node (DOM requirement)
-            $("#delBtn").on("click", function() {
-                const nodeArea = document.getElementById("nodeArea");
-                if (nodeArea.hasChildNodes()) {
-                    nodeArea.removeChild(nodeArea.firstChild); // DOM Node removal
-                    $(this).hide();
-                    $(nodeArea).fadeOut();
-                }
-            });
-
-            function showError(text) {
-                const msg = document.getElementById("msg");
-                msg.innerHTML = "⚠️ " + text;
-                $(msg).css({
-                    "color": "#991b1b",
-                    "background": "#fee2e2",
-                    "display": "block"
-                });
-            }
-        });
-    </script>
+    <script src="form.js"></script>
 </body>
 </html>
